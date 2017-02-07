@@ -1,0 +1,371 @@
+<html>
+
+<head>
+	<link rel="STYLESHEET" href="/display.css" type="text/css">
+	<!--meta http-equiv="content-type" content="text/html; charset=iso-8859-1"-->
+	<title>Light Linux with Slax</title>
+	<LINK REL="SHORTCUT ICON" HREF="/favicon.ico">	
+	<meta name="keywords" content="Light Linux with Slax">
+	<meta name="classification" content="Computers - Unix">
+</head>
+
+<body>
+<div id="header">
+	<table border=0 width=100%>
+		<tr>
+			<td><h1 class=white><a class=white href="/">Home</a></h1></td>
+			<td class=white align=right>Last modified: 09-12-2013</td>
+		</tr>
+	</table>
+</div>
+
+<div class="entrycontent">
+
+
+<h1>Light Linux with Slax</h1>
+<h2>Introduction</h2>
+<p><a href="http://www.slax.org/">Slax</a> is a very light, multilingual Linux 
+distribution based on Slackware. This article is based on release 7.0.5.</p>
+<h2>Information</h2>
+<p>Persistent changes are no longer made in /slax/changes/ but rather /live/memory/changes</p>
+<p>Slax modules/bundles are rebuilt Slackware packages</p>
+<p>If you need to save a file onto the USB keydrive while running Slax, save 
+it in /mnt/live/memory/.</p>
+<h2>Temp Things to do</h2>
+<h3><strike>Install Slax on hard drive</strike></h3>
+<h4>Linux</h4>
+<p>We'll assume the hard drive is empty, so there's no need to multiboot to 
+Windows:</p>
+<ol type="1">
+    <li>Boot Slax from a USB keydrive</li>
+    <li>Create and format a Linux partition on the hard drive (eg. mkfs.ext4 
+    /dev/sda1; &quot;... is not a block special device.&quot; means the partition 
+    should be unmounted before formatting)</li>
+    <li>From the Slax site, download the ZIP file, and unzip into the partition 
+    (eg. wget -c <a href="http://www.slax.org/download/7.0.5/slax-French-7.0.5-i486.zip;">http://www.slax.org/download/7.0.5/slax-French-7.0.5-i486.zip;</a> 
+    cd /mnt/sda1 ; unzip slax-French-7.0.5-i486.zip)</li>
+    <li>Cd to /slax/boot, and run bootinst.bat (not bootinst.sh?), which will 
+    install Grub in the MBR</li>
+    <li>Reboot while removing the USB keydrive</li>
+</ol>
+<h4>Windows</h4>
+<p>Slax doesn't require a Linux partition. The contents of its ZIP file can 
+be unzipped in an NTFS partition. grub4dos will take care of booting up Slax 
+without making changes to the MBR.</p>
+<ul type="disc">
+    <li><a href="http://www.slax.org/en/documentation.php#booting">Slax on USB 
+    device or hard disk</a></li>
+    <li><a href="http://gr8idea.info/os/tutorials/slax/install.html">Install 
+    on a Hard Drive</a></li>
+    <li><a href="http://old.slax.org/forum.php?action=view&parentID=60864">Dual 
+    Boot Windows 7 &amp; Slax USB flash + wifi solved</a></li>
+    <li><a href="http://old.slax.org/forum.php?action=view&parentID=4456">Installing 
+    SLAX to Hard Drive</a></li>
+    <li><a href="http://old.slax.org/forum.php?action=view&parentID=20957">Howto 
+    install slax to your harddrive, dualboot</a></li>
+    <li><a href="http://old.slax.org/forum.php?action=view&parentID=63150">WIndows7 
+    and SLAX 6.1.2 Dual Boot</a></li>
+    <li><a href="http://old.slax.org/forum.php?action=view&parentID=71503">[HOWTO] 
+    Windows 7 multiple partitions one for slax</a></li>
+</ul>
+<h3><strike>Kitty: Change colors for man pages</strike></h3>
+<h3><strike>Error installing Chrome through Software Center</strike></h3>
+<p>Booted from USB keydrive &gt; Software Center.</p>
+<p>&quot;Error mounting of the bundle, perhaps corrupted download&quot;</p>
+<p>Tried again: &quot;Slax bundle is already active as 2230-chrome.sb&quot;. 
+Rebooted, &quot;Slax bundle is already active as 2230-chrome.sb&quot; but found 
+in KDE Internet menu.</p>
+<h3><strike>Switch between FR and US-EN interface</strike></h3>
+<p>&quot;US English&quot; is included in all releases of Slax, even if you installed 
+a different release. Go into KDE's System Configuration &gt; Localization, click 
+on the Languages tab, add US-EN to &quot;Prefered Languages&quot;, and reboot.</p>
+<h3><strike>How to remove a module (eg. Firefox) entirely?</strike></h3>
+<p>The orthodox way is to run &quot;slax info&quot;, followed by &quot;slax 
+deactivate &lt;module&gt;&quot;. If it fails because the app has some process 
+running, just remove the .sb file located under /mnt/live/memory/data/slax/, 
+and reboot.</p>
+<p>Before removing Firefox, be aware that Software Center relies on it...</p>
+<h3><strike>Load all mass storage devices (HD partitions + external drives)</strike></h3>
+<p>Just add a script in /etc/rc.d/rc3.d/:</p>
+<dl>
+    <dd>#!/bin/bash
+    <dd>/usr/libexec/udisks-daemon &amp;
+    <dd>/usr/libexec/polkitd &amp;
+</dl>
+<p>More infos:</p>
+<ul type="disc">
+    <li>HAL: Deprecated, replaced in KDE4 with <b>udisks</b> (releases 1 and 
+    2, which can be installed side-by-side); udisks is &quot;essentially [...] 
+    an abstraction for enumerating disk and storage devices and performing operations 
+    on them. Udisks provides:</li>
+    <ul type="disc">
+        <li>A daemon (udisks-daemon) that implements well-defined D-Bus interfaces 
+        that can be used to query and manipulate disk and storage devices.</li>
+        <li>A command-line tool (udisks), that can be used to query and use 
+        the daemon<br><br>Actions that a user can perform using udisks can be 
+        restricted using PolicyKit. Udisks relies on the kernel and udev where 
+        possible but does poll devices which do not publish their own details. 
+        Typically a DVD device is polled. (&quot;Introduction to Udisks&quot;, 
+        Finnbarr P. Murphy)&nbsp;</li>
+    </ul>
+    <li>udev: udev manages device nodes in /dev; successor of devfs and hotplug; 
+    was merged in 2012 into systemd</li>
+    <li><b>systemd</b>: replacement for sysvinit/Upstart to manage daemons; 
+    systemd-logind should be referenced in /etc/pam.d. The display manager should 
+    support systemd.</li>
+    <li>ConsoleKit : used by systems that rely on upstart instead of systemd; 
+    Hence, not used in Slax</li>
+    <li><b>PolicyKit</b> = Provides way for non-privileged processes to communicate 
+    with privileged ones; hosted by the <a href="http://www.freedesktop.org/software/polkit/docs/latest/polkit.8.html">freedesktop.org</a> 
+    project; udisks uses PolicyKit for authorization</li>
+    <li><b>D-Bus</b>: IPC; Replaced DCOP in KDE 4; Works with Unix sockets; 
+    Automatically enabled when using systemd, since it relies on D-Bus</li>
+</ul>
+<p>Daemons such udisks or polkit can either be started by systemd at boot time 
+or at session time by the display manager through D-Bus.</p>
+<p><a href="http://solid.kde.org/">&quot;Solid</a> is a device integration framework 
+for KDE 4; relies on udev/systemd.&quot;</p>
+<p># solid-hardware list</p>
+<p>QStringList Solid::Backends::UDisks::UDisksManager::allDevicesInternal() 
+&nbsp;error: &nbsp;&quot;org.freedesktop.DBus.Error.ServiceUnknown&quot;</p>
+<p>virtual QStringList Solid::Backends::UPower::UPowerManager::allDevices() 
+&nbsp;error: &nbsp;&quot;org.freedesktop.DBus.Error.ServiceUnknown&quot;</p>
+<p># udisks --dump</p>
+<p>it is up to the distribution itself to ensure that UDisks is launched either 
+before KDE is started - or is able to start itself automatically (via D-Bus 
+autolaunching).</p>
+<p><a href="http://forum.kde.org/viewtopic.php?f=225&t=110110">http://forum.kde.org/viewtopic.php?f=225&amp;t=110110</a></p>
+<p><a href="http://mdzlog.alcor.net/2010/06/27/navigating-the-policykit-maze/">Navigating 
+the PolicyKit maze</a></p>
+<p><a href="http://www.freedesktop.org/wiki/Software/polkit">www.freedesktop.org/wiki/Software/polkit</a></p>
+<p>KDE Menu &gt; Applications &gt; System &gt; System Setting &gt; Hardware 
+&gt;&nbsp;Removeable Media &gt; Check &quot;Enable automatic mounting of removeable 
+media&quot; On Login / Once mounted + check all the items in the two columns 
+(!), reboot. DOESN'T WORK: Works when booting off hard drive</p>
+<p>&quot;udisks provides an interface to enumerate storage devices and perform 
+operations on them. Any application can access the org.freedesktop.UDisks service 
+on the system message bus. On Linux, udisks relies on recent versions of udev(7) 
+and the kernel.&quot;</p>
+<p>&quot;<a href="http://udisks.freedesktop.org">Udisks</a> (formerly called 
+DeviceKit-disks) is a replacement for part of the functionality which used be 
+provided by the now deprecated HAL (Hardware Abstraction Layer). Essentially 
+it is an abstraction for enumerating disk and storage devices and performing 
+operations on them. Udisks provides:</p>
+<ul type="disc">
+    <li>A daemon (udisks-daemon) that implements well-defined D-Bus interfaces 
+    that can be used to query and manipulate disk and storage devices.</li>
+    <li>A command-line tool (udisks), that can be used to query and use the 
+    daemon.</li>
+</ul>
+<p>Actions that a user can perform using udisks can be restricted using PolicyKit. 
+Udisks relies on the kernel and udev where possible but does poll devices which 
+do not publish their own details. Typically a DVD device is polled&quot; <a href="http://www.scribd.com/doc/63425975/Introduction-to-Udisks">http://www.scribd.com/doc/63425975/Introduction-to-Udisks</a></p>
+<p>&quot;The udisks daemon serves as an interface to system block devices, implemented 
+via D-Bus. It handles operations such as querying, mounting, unmounting, formatting, 
+or detaching storage devices such as hard disks or USB thumb drives.<br>This 
+package also provides the udisks utility, which can be used to trigger these 
+operations from the command line (if permitted by PolicyKit). External tools 
+such as hdparm are used if available to implement extra operations, such as 
+configuring disk spindown times.&quot;</p>
+<p><a href="http://askubuntu.com/questions/145706/what-does-udisks-daemon-do-and-do-i-need-it">http://askubuntu.com/questions/145706/what-does-udisks-daemon-do-and-do-i-need-it</a></p>
+<p>What is <a href="http://wiki.gentoo.org/wiki/D-Bus">D-Bus</a>? &quot;inter-process 
+communication (IPC) system for software applications to communicate with one 
+another.&quot;</p>
+<h3>Save customized hard drive Slax into ISO file, and test new USB keydrive</h3>
+<ol type="1">
+    <li>Install Slax on the hard drive</li>
+    <li>Customize to your heart's content</li>
+    <li>Download and untar the <a href="http://www.linux-live.org/">Linux Live 
+    scripts</a> into /tmp</li>
+    <li>Run /tmp/build</li>
+    <li>Run /boot/makeiso.sh to create the ISO</li>
+</ol>
+<p>&nbsp;</p>
+<ol type="1">
+    <li>Install on a hard drive, as it's easier than trying to customize an 
+    ISO file</li>
+    <li>Add/remove modules, rearrange boot statements</li>
+    <li>Boot to always fresh mode (?) and delete any changes.dat file</li>
+    <li>Run /boot/makeiso.sh to create an ISO</li>
+</ol>
+<p><a href="http://old.slax.org/forum.php?action=view&parentID=32326">http://old.slax.org/forum.php?action=view&amp;parentID=32326</a> 
+(from markds)</p>
+<p>&quot;By default, Slax detects if you run it from a writable device. If yes, 
+then all the changes you make to the operating system itself are saved and restored 
+next time you boot. If your device uses FAT filesystem, which is most common 
+on USB flash drives, then all file modifications to Slax itself are saved into 
+a special file changes.dat, which is created on your boot device in /slax/changes/ 
+directory, and grows automatically in size up to 4GB. If your boot device uses 
+a native Linux filesystem such as ext4, then the changed files are saved natively 
+to /slax/changes/ directory without any need for intermediate changes.dat file. 
+If you, for any reason, do not like persistent changes, simply uncheck the appropriate 
+boot option and your Slax will start using the default 'fresh' configuration 
+and won't save any modifications. It may be useful also in cases you'd like 
+to test something system-wide, since you can always revert to the default state 
+by simple reboot (in case things screw up).</p>
+<p>The file changes.dat is designed to work even on FAT filesystems, which are 
+commonly used on most USB flash drives. Unfortunately FAT is limited to 4GB 
+file size; for that reason, persistent changes can't grow more. In case you 
+need to save more, please format your storage drive with some Linux filesystem 
+such as EXT4 or BTRFS and install Slax to it. Slax will be able to save changes 
+natively and will be limited only by the actual capacity of your device. Persistent 
+Changes functionality does not (of course) affect files on hard drives in your 
+computer. If you modify these files, they will always be modified regardless 
+of your persistent changes settings.</p>
+<p>The empty directory /memory/changes is writable, thus the entire AUFS mount 
+in /memory/union happens to be writable as well. All new or changed files inside 
+the union are copied-up to this empty directory before the system creates or 
+modifies them. Since the directory for changes resides on tmpfs (that is in 
+RAM), all new and modified files are stored in RAM and thus are lost on reboot.</p>
+<p>Yet if Slax is started from a writable media such as USB device or hard disk, 
+it recognizes that and mounts the writable drive over /memory/changes before 
+it is joined with the other branches in union, which effectively means that 
+changed and new files will be stored on the boot device rather than in RAM, 
+and reboot won't erase them. This feature is called Persistent Changes and can 
+be turned on or off by a boot menu setting. &quot; <a href="http://www.slax.org/en/documentation.php">http://www.slax.org/en/documentation.php</a></p>
+<h3>Remove unneeded options in boot menu?</h3>
+<p>Boot menu: From boot menu, remove all options (Persistent changes, Graphical 
+desktop, Copy to RAM, Act as PXE server) and replace with two options: &quot;Start 
+Slax&quot; and &quot;Run diagnostic&quot; (to run either lshw or dmidecode and 
+e-mail output)</p>
+<h3>Add option to boot into text mode and run lshw/lspci/dmidecode</h3>
+<p>Edit /slax/boot/syslinux.cfg</p>
+<p>Also check /syslinux.cfg</p>
+<p><a href="http://www.syslinux.org/wiki/index.php/SYSLINUX">http://www.syslinux.org/wiki/index.php/SYSLINUX</a></p>
+<p><a href="https://wiki.archlinux.org/index.php/Syslinux">https://wiki.archlinux.org/index.php/Syslinux</a></p>
+<p>You can use an unused runlevel for that, for example runlevel 4 on non-Slackware 
+systems or runlevel 5 on Slackware systems.</p>
+<p>After you have configured a runlevel to behave in the way you want just change 
+the option in the bootloader to boot into that specific runlevel.</p>
+<h3>Hide dmesg when booting</h3>
+<h3>Modify bitmaps to own</h3>
+<h3>Add &quot;ll&quot; alias&quot; for both local and SSH access</h3>
+<p>Must add to /etc/profile (with persistence) and ~/.bashrc.</p>
+<h2>Q&amp;A</h2>
+<h3>How to find which version of Slax version I'm running?</h3>
+<p>cat /etc/slax-version</p>
+<h3>How to find which version of KDE I'm running?</h3>
+<p>kded4 --version</p>
+<h3>Is VESA a good way to minimize video issues? What options are available when booting Slax (vga=773, etc.)?</h3>
+<p>So-called &quot;cheatcodes&quot; can be changed by pressing ESC followed 
+by TAB.</p>
+<p>A few are listed in the &quot;<a href="http://www.slax.org/en/documentation.php#booting">Cheatcodes 
+for Slax</a>&quot; section, and more are available through &quot;man bootparam&quot;.</p>
+<h3>How to add system-wide aliases?</h3>
+<p>Edit /etc/profile.d/slax.sh, and reboot.</p>
+<h3>When running off USB (in persistent mode), what is /mnt/live/?</h3>
+<p><a href="http://old.slax.org/forum.php?action=view&parentID=75605&anchorid=84484#postid84484">http://old.slax.org/forum.php?action=view&amp;parentID=75605&amp;anchorid=84484#postid84484</a></p>
+<h3>What network (wifi/Ethernet), video, and data storage (SATA, USB, and external 
+drives) drivers does Slax have as default?</h3>
+<h3>How to add&nbsp;apps not part of a module/bundle?</h3>
+<p>Get a Slackware or Debian package, and convert it to a Slax module.</p>
+<h3>What is slax.sb?</h3>
+<h3>What is /modules?</h3>
+<h3>In the Modules section, what are &quot;download&quot;, &quot;add to build&quot;, 
+and &quot;activate&quot;?</h3>
+<h3>How to add/remove modules?</h3>
+<p>Add/remove <a href="http://www.slax.org/en/modules.php">modules</a>, changes 
+settings, save to ISO: Download module files from slax website, and put them 
+into /slax/modules/ folder. Then you have to create the ISO image, using mkisofs. 
+I didn't find how to remove modules in Utilities or System Configuration: What 
+is the right way</p>
+<p><a href="http://www.ab9il.net/slax/slax-customization1.html">Customizing 
+SLAX: Part 1 - Giving SLAX your own look and flavor</a></p>
+<p><a href="http://www.ab9il.net/slax/slax-customization2.html">Customizing 
+SLAX: Part 2 - Customizing SLAX Core Modules</a></p>
+<p>Run the Software Center. If the icon was removed from the desktop, /usr/bin/softcenter.</p>
+<h3>What is &quot;slax activate&quot;?</h3>
+<p>Activating = installing.</p>
+<p>Per <a href="http://www.slax.org/en/documentation.php#modules">Slax modules</a>: 
+&quot;Slax modules do not need unpacking. They are used in the packed form. 
+Instead of installing, Slax modules are activated. In technical terms, that 
+means mounted and added to aufs union as a new branch.</p>
+<p>[...] Offline module activation is performed when Slax is not running. You 
+can activate module (a file with .sb extension) by copying it to /slax/modules/ 
+directory on your boot device. All modules copied there will be automatically 
+activated during Slax startup. Removing the module (the file with .sb extension) 
+from /slax/modules/ directory will uninstall it so it is not a part of Slax 
+any longer.</p>
+<p>Online module activation is performed when Slax is running, directly within 
+Slax system. You can either use Software Center to activate and deactivate modules 
+on the fly or you can use [command-line] commands&quot; (slax search/info/download/activate.)</p>
+<h3>How to install an application not available as a Slax bundle?</h3>
+<p>If it's available&nbsp;as a Slackware package, open a console to convert 
+it to a Slax bundle with &quot;txz2sb&quot;, put the resulting .sb file into 
+slax/modules, and reboot.</p>
+<p>If it's not available as a Slackware package and it's only a script, <a href="http://old.slax.org/forum.php?action=view&parentID=25732">http://old.slax.org/forum.php?action=view&amp;parentID=25732</a></p>
+<h3>lshw is missing from Slax</h3>
+<ol type="1">
+    <li>Get its <a href="http://slackfind.net/en/packages/search/?name=lshw">Slackware 
+    package</a></li>
+    <li>Convert it to a Slax bundle: txz2sb lshw.txz lshw.sb</li>
+    <li>Copy lshw.sb into /slax/modules/ (or if already running from USB stick, 
+    /mnt/live/memory/data/slax/modules)</li>
+    <li>slax activate /slax/modules/lshw.sb</li>
+</ol>
+<h3>How to install a driver not available in Slax?</h3>
+<p><a href="http://old.slax.org/forum.php?action=view&parentID=32106">http://old.slax.org/forum.php?action=view&amp;parentID=32106</a></p>
+<h3>What is a hard drive frugal install?</h3>
+<p>&quot;If an operating system is installed frugally, operating system files 
+cannot be modified, so they cannot become corrupted. Personal files and settings 
+can be saved, but operating system files are not modified.&quot;</p>
+<p><a href="http://gr8idea.info/os/tutorials/slax/index.html">http://gr8idea.info/os/tutorials/slax/index.html</a></p>
+<p>It means installing Slax on a hard drive by copying the contents of a live 
+CD/USB. If you don't need to multiboot with eg. Windows, end with running the 
+Slax install scripts.</p>
+<h3>Wifi: What is ndiswrapper?</h3>
+<p>Third alternative to open-source driver and closed-source drivers?</p>
+<h3>Is an SSH Server available for Slax?</h3>
+<p><a href="http://old.slax.org/forum.php?action=view&parentID=9328">How to 
+install Telnet Server and SSH server</a></p>
+<p>It's part of the standard ISO but isn't started automatically.</p>
+<ol type="1">
+    <li>chmod +x /etc/rc.d/rc.sshd</li>
+    <li>/etc/rc.d/rc.sshd start</li>
+    <li>Log on as root/root</li>
+</ol>
+<ol type="1">
+    <li>sh /etc/rc.d/rc.sshd start</li>
+    <li>chmod +x /etc/rc.d/rc.sshd</li>
+    <li>default root/root</li>
+</ol>
+<h3>How to save files onto USB keydrive and make them available on Windows?</h3>
+<p>mkdir /mnt/usb; mount /dev/s??? /mnt/usb; copy files; umount /mnt/usb ; reboot</p>
+<h3>Changing volume labels on mass storage devices</h3>
+<p>Note: A label must not exceed 16 characters.</p>
+<ol type="1">
+    <li>If mounted,unmount volume</li>
+    <li>To change the volume label on an NTFS partition:<br><br># ntfslabel 
+    /dev/sda1 &quot;My NTFS partition&quot;<br>&nbsp;</li>
+    <li>To change the volume label on a Linux partition:<br><br># e2label /dev/sda2 
+    &quot;My Linux partition&quot;</li>
+</ol>
+<h2>Resources</h2>
+<ul type="disc">
+    <li><a href="http://old.slax.org/forum.php">Link to forum</a> not provided 
+    on homepage</li>
+    <li>A page explains <a href="http://www.slax.org/en/documentation.php#internals">how 
+    Slax works</a></li>
+    <li>Slax's author keeps <a href="http://www.slax.org/en/blog.php">a blog</a> 
+    with a lot of very useful infos</li>
+    <li><a href="http://www.linuxquestions.org/questions/forumdisplay.php?forumid=14">Slackware 
+    section</a> on LinuxQuestions.org</li>
+    <li><a href="http://old.slax.org/forum.php?action=view&parentID=52631">[SLAX 
+    FAQ] FIND YOUR ANSWERS HERE!</a> (2009-2010; Some tips might no longer apply)</li>
+</ul>
+<script>
+		  (function() {
+		    var cx = '018380135220369063761:xtaiscqnih4';
+		    var gcse = document.createElement('script');
+		    gcse.type = 'text/javascript';
+		    gcse.async = true;
+		    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+		        '//www.google.com/cse/cse.js?cx=' + cx;
+		    var s = document.getElementsByTagName('script')[0];
+		    s.parentNode.insertBefore(gcse, s);
+		  })();
+		</script>
+		<gcse:search></gcse:search>
+</div>
+</body>
+</html>
